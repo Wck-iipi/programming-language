@@ -10,10 +10,6 @@
 void runFile(std::string path);
 void runPrompt();
 void run(std::string source);
-void error(int line, std::string message);
-void report(int line, std::string where, std::string message);
-
-bool hadError = false;
 
 int main(int argc, char **argv) {
   if (argc > 1) {
@@ -55,14 +51,6 @@ void run(std::string source) {
   Scanner scanner(source);
   std::vector<Token> tokens = scanner.scanTokens();
   for (Token token : tokens) {
-    std::cout << token.token << std::endl;
+    std::cout << token.toString() << std::endl;
   }
-}
-
-void error(int line, std::string message) { report(line, "", message); }
-
-void report(int line, std::string where, std::string message) {
-  throw std::runtime_error("[line " + std::to_string(line) + "] Error" + where +
-                           ": " + message);
-  hadError = true;
 }

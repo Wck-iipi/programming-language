@@ -45,6 +45,7 @@ enum TokenType {
   TRUE,
   VAR,
   WHILE,
+  EOF_TOKEN
 };
 class Token {
 private:
@@ -54,7 +55,6 @@ private:
   int line;
 
 public:
-  std::string toString(TokenType type, std::string lexeme, std::string literal,
-                       int line);
+  std::string toString();
   Token(TokenType type, std::string lexeme, std::string literal, int line);
 };
