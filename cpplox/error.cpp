@@ -1,4 +1,4 @@
-#include "error.h"
+#include "./error.h"
 
 bool Error::hadError = false;
 

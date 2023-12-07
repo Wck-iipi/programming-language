@@ -1,6 +1,6 @@
-#include "scanner.h"
-#include "error.h"
-#include "token.h"
+#include "./scanner.h"
+#include "./error.h"
+#include "./token.h"
 
 Scanner::Scanner(std::string source) : source(source) {}
 
@@ -9,7 +9,7 @@ std::vector<Token> Scanner::scanTokens() {
     start = current;
     scanToken();
   }
-  tokens.push_back(Token(EOF_TOKEN, "", nullptr, line));
+  tokens.push_back(Token(EOF_TOKEN, "", "", line));
   return tokens;
 }
 
@@ -19,53 +19,53 @@ void Scanner::scanToken() {
   char c = source.at(current++);
   switch (c) {
   case '(':
-    addToken(LEFT_PAREN, nullptr);
+    addToken(LEFT_PAREN, "");
     break;
   case ')':
-    addToken(RIGHT_PAREN, nullptr);
+    addToken(RIGHT_PAREN, "");
     break;
   case '{':
-    addToken(LEFT_BRACE, nullptr);
+    addToken(LEFT_BRACE, "");
     break;
   case '}':
-    addToken(RIGHT_BRACE, nullptr);
+    addToken(RIGHT_BRACE, "");
     break;
   case ',':
-    addToken(COMMA, nullptr);
+    addToken(COMMA, "");
     break;
   case '.':
-    addToken(DOT, nullptr);
+    addToken(DOT, "");
     break;
   case '-':
-    addToken(MINUS, nullptr);
+    addToken(MINUS, "");
     break;
   case '+':
-    addToken(PLUS, nullptr);
+    addToken(PLUS, "");
     break;
   case ';':
-    addToken(SEMICOLON, nullptr);
+    addToken(SEMICOLON, "");
     break;
   case '*':
-    addToken(STAR, nullptr);
+    addToken(STAR, "");
     break;
   case '!':
-    addToken(match('=') ? BANG_EQUAL : BANG, nullptr);
+    addToken(match('=') ? BANG_EQUAL : BANG, "");
     break;
   case '>':
-    addToken(match('=') ? GREATER_EQUAL : GREATER, nullptr);
+    addToken(match('=') ? GREATER_EQUAL : GREATER, "");
     break;
   case '<':
-    addToken(match('=') ? LESS_EQUAL : LESS, nullptr);
+    addToken(match('=') ? LESS_EQUAL : LESS, "");
     break;
   case '=':
-    addToken(match('=') ? EQUAL_EQUAL : EQUAL, nullptr);
+    addToken(match('=') ? EQUAL_EQUAL : EQUAL, "");
     break;
   case '/':
     if (match('/')) {
       while (source.at(current) != '\n' && !isAtEnd(source))
         current++;
     } else {
-      addToken(SLASH, nullptr);
+      addToken(SLASH, "");
     }
     break;
   case ' ':
@@ -95,7 +95,7 @@ bool Scanner::match(char expected) {
 }
 
 void Scanner::addToken(TokenType type, std::string literal) {
-  std::string text = source.substr(start, current);
+  std::string text = source.substr(start, current - start);
   tokens.push_back(Token(type, text, literal, line));
 }
 
@@ -111,6 +111,7 @@ void Scanner::string() {
     Error::error(line, "Unterminated string.");
     return;
   }
-  current++;                                               // goes to ending "
-  addToken(STRING, source.substr(start + 1, current - 1)); // skipping the "
+  current++; // goes to ending "
+  addToken(STRING,
+           source.substr(start + 1, current - start - 2)); // skipping the "
 }

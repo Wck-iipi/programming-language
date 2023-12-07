@@ -7,9 +7,9 @@
 class Scanner {
 private:
   std::string source;
-  int start;
-  int current;
-  int line;
+  int start = 0;
+  int current = 0;
+  int line = 0;
   std::vector<Token> tokens;
   bool isAtEnd(std::string source);
   void scanToken();

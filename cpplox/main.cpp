@@ -1,8 +1,9 @@
 // Copyright
-#include "scanner.h"
-#include "token.h"
+#include "./scanner.h"
+#include "./token.h"
 #include <fstream>
 #include <iostream>
+#include <ostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
