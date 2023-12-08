@@ -18,6 +18,7 @@ private:
   bool match(char expected);
   void string();
   void number();
+  char peekNext();
 
 public:
   Scanner(std::string source);

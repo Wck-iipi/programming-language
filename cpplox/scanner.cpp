@@ -90,14 +90,18 @@ void Scanner::scanToken() {
   }
 }
 
+char Scanner::peekNext() {
+  if (current + 1 >= source.length())
+    return '\0';
+  return source.at(current + 1);
+}
 void Scanner::number() {
-  std::cout << current << "," << start << std::endl;
-  while (isdigit(source.at(current))) {
+  while (!isAtEnd(source) && isdigit(source.at(current))) {
     current++;
   }
-  if (source.at(current) == '.' && isdigit(source.at(current + 1))) {
+  if (!isAtEnd(source) && source.at(current) == '.' && isdigit(peekNext())) {
     current++;
-    while (isdigit(source.at(current))) {
+    while (!isAtEnd(source) && isdigit(source.at(current))) {
       current++;
     }
   }
