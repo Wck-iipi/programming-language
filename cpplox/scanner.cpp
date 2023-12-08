@@ -1,9 +1,13 @@
 #include "./scanner.h"
 #include "./error.h"
 #include "./token.h"
-#include <iostream>
 #include <variant>
 
+std::map<std::string, TokenType> Scanner::keywords = {
+    {"and", AND},   {"class", CLASS}, {"else", ELSE},     {"false", FALSE},
+    {"for", FOR},   {"fun", FUN},     {"if", IF},         {"nil", NIL},
+    {"or", OR},     {"print", PRINT}, {"return", RETURN}, {"super", SUPER},
+    {"this", THIS}, {"true", TRUE},   {"var", VAR},       {"while", WHILE}};
 Scanner::Scanner(std::string source) : source(source) {}
 
 std::vector<Token> Scanner::scanTokens() {
@@ -84,10 +88,25 @@ void Scanner::scanToken() {
   default:
     if (isdigit(c)) {
       number();
+    } else if (isalpha(c) || c == '_') {
+      identifier();
     } else {
       Error::error(line, "Unexpected character.");
     }
   }
+}
+
+void Scanner::identifier() {
+  while ((isalnum(source.at(current)) || source.at(current) == '_') &&
+         !isAtEnd(source)) {
+    current++;
+  }
+  std::string text = source.substr(start, current - start);
+  if (keywords.find(text) != keywords.end()) {
+    addToken(keywords[text], std::monostate{});
+    return;
+  }
+  addToken(IDENTIFIER, std::monostate{});
 }
 
 char Scanner::peekNext() {

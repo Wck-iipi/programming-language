@@ -1,6 +1,7 @@
 #pragma once
 #include "./token.h"
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,8 @@ private:
   void string();
   void number();
   char peekNext();
+  void identifier();
+  static std::map<std::string, TokenType> keywords;
 
 public:
   Scanner(std::string source);
