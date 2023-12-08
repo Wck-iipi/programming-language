@@ -11,8 +11,9 @@ std::vector<std::string> tokenType = {
     "TRUE",       "VAR",           "WHILE",      "EOF_TOKEN"};
 
 std::string Token::toString() {
-  return tokenType[this->type] + "," + this->lexeme + "," + this->literal +
-         "," + std::to_string(this->line);
+  return tokenType[this->type] + "," + this->lexeme + "," +
+         std::any_cast<std::string>(this->literal) + "," +
+         std::to_string(this->line);
 }
-Token::Token(TokenType type, std::string lexeme, std::string literal, int line)
+Token::Token(TokenType type, std::string lexeme, std::any literal, int line)
     : type(type), lexeme(lexeme), literal(literal), line(line) {}

@@ -1,5 +1,5 @@
 #pragma once
-#include "token.h"
+#include "./token.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -13,9 +13,10 @@ private:
   std::vector<Token> tokens;
   bool isAtEnd(std::string source);
   void scanToken();
-  void addToken(TokenType type, std::string literal);
+  void addToken(TokenType type, std::any literal);
   bool match(char expected);
   void string();
+  void number();
 
 public:
   Scanner(std::string source);

@@ -52,10 +52,10 @@ class Token {
 private:
   TokenType type;
   std::string lexeme;
-  std::string literal;
+  std::any literal;
   int line;
 
 public:
   std::string toString();
-  Token(TokenType type, std::string lexeme, std::string literal, int line);
+  Token(TokenType type, std::string lexeme, std::any literal, int line);
 };

@@ -1,6 +1,7 @@
 #include "./scanner.h"
 #include "./error.h"
 #include "./token.h"
+#include <any>
 
 Scanner::Scanner(std::string source) : source(source) {}
 
@@ -80,9 +81,25 @@ void Scanner::scanToken() {
     break;
 
   default:
-    std::cout << "Unexpected character." << std::endl;
-    break;
+    if (isdigit(c)) {
+      number();
+    } else {
+      Error::error(line, "Unexpected character.");
+    }
   }
+}
+
+void Scanner::number() {
+  while (isdigit(source.at(current))) {
+    current++;
+  }
+  if (source.at(current) == '.' && isdigit(source.at(current + 1))) {
+    current++;
+    while (isdigit(source.at(current))) {
+      current++;
+    }
+  }
+  addToken(NUMBER, source.substr(start, current - start));
 }
 
 bool Scanner::match(char expected) {
@@ -94,7 +111,7 @@ bool Scanner::match(char expected) {
   return true;
 }
 
-void Scanner::addToken(TokenType type, std::string literal) {
+void Scanner::addToken(TokenType type, std::any literal) {
   std::string text = source.substr(start, current - start);
   tokens.push_back(Token(type, text, literal, line));
 }
