@@ -10,10 +10,20 @@ std::vector<std::string> tokenType = {
     "OR",         "PRINT",         "RETURN",     "SUPER",       "THIS",
     "TRUE",       "VAR",           "WHILE",      "EOF_TOKEN"};
 
+struct VariantToString {
+  std::string operator()(double value) const { return std::to_string(value); }
+
+  std::string operator()(const std::string &value) const { return value; }
+
+  std::string operator()(std::monostate) const { return "NULL"; }
+};
+
 std::string Token::toString() {
   return tokenType[this->type] + "," + this->lexeme + "," +
-         std::any_cast<std::string>(this->literal) + "," +
+         std::visit(VariantToString{}, this->literal) + "," +
          std::to_string(this->line);
 }
-Token::Token(TokenType type, std::string lexeme, std::any literal, int line)
+Token::Token(TokenType type, std::string lexeme,
+             std::variant<double, std::string, std::monostate> literal,
+             int line)
     : type(type), lexeme(lexeme), literal(literal), line(line) {}

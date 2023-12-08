@@ -1,7 +1,8 @@
 #include "./scanner.h"
 #include "./error.h"
 #include "./token.h"
-#include <any>
+#include <iostream>
+#include <variant>
 
 Scanner::Scanner(std::string source) : source(source) {}
 
@@ -10,7 +11,7 @@ std::vector<Token> Scanner::scanTokens() {
     start = current;
     scanToken();
   }
-  tokens.push_back(Token(EOF_TOKEN, "", "", line));
+  tokens.push_back(Token(EOF_TOKEN, "", std::monostate{}, line));
   return tokens;
 }
 
@@ -20,53 +21,53 @@ void Scanner::scanToken() {
   char c = source.at(current++);
   switch (c) {
   case '(':
-    addToken(LEFT_PAREN, "");
+    addToken(LEFT_PAREN, std::monostate{});
     break;
   case ')':
-    addToken(RIGHT_PAREN, "");
+    addToken(RIGHT_PAREN, std::monostate{});
     break;
   case '{':
-    addToken(LEFT_BRACE, "");
+    addToken(LEFT_BRACE, std::monostate{});
     break;
   case '}':
-    addToken(RIGHT_BRACE, "");
+    addToken(RIGHT_BRACE, std::monostate{});
     break;
   case ',':
-    addToken(COMMA, "");
+    addToken(COMMA, std::monostate{});
     break;
   case '.':
-    addToken(DOT, "");
+    addToken(DOT, std::monostate{});
     break;
   case '-':
-    addToken(MINUS, "");
+    addToken(MINUS, std::monostate{});
     break;
   case '+':
-    addToken(PLUS, "");
+    addToken(PLUS, std::monostate{});
     break;
   case ';':
-    addToken(SEMICOLON, "");
+    addToken(SEMICOLON, std::monostate{});
     break;
   case '*':
-    addToken(STAR, "");
+    addToken(STAR, std::monostate{});
     break;
   case '!':
-    addToken(match('=') ? BANG_EQUAL : BANG, "");
+    addToken(match('=') ? BANG_EQUAL : BANG, std::monostate{});
     break;
   case '>':
-    addToken(match('=') ? GREATER_EQUAL : GREATER, "");
+    addToken(match('=') ? GREATER_EQUAL : GREATER, std::monostate{});
     break;
   case '<':
-    addToken(match('=') ? LESS_EQUAL : LESS, "");
+    addToken(match('=') ? LESS_EQUAL : LESS, std::monostate{});
     break;
   case '=':
-    addToken(match('=') ? EQUAL_EQUAL : EQUAL, "");
+    addToken(match('=') ? EQUAL_EQUAL : EQUAL, std::monostate{});
     break;
   case '/':
     if (match('/')) {
       while (source.at(current) != '\n' && !isAtEnd(source))
         current++;
     } else {
-      addToken(SLASH, "");
+      addToken(SLASH, std::monostate{});
     }
     break;
   case ' ':
@@ -90,6 +91,7 @@ void Scanner::scanToken() {
 }
 
 void Scanner::number() {
+  std::cout << current << "," << start << std::endl;
   while (isdigit(source.at(current))) {
     current++;
   }
@@ -99,7 +101,7 @@ void Scanner::number() {
       current++;
     }
   }
-  addToken(NUMBER, source.substr(start, current - start));
+  addToken(NUMBER, stod(source.substr(start, current - start)));
 }
 
 bool Scanner::match(char expected) {
@@ -111,7 +113,8 @@ bool Scanner::match(char expected) {
   return true;
 }
 
-void Scanner::addToken(TokenType type, std::any literal) {
+void Scanner::addToken(
+    TokenType type, std::variant<double, std::string, std::monostate> literal) {
   std::string text = source.substr(start, current - start);
   tokens.push_back(Token(type, text, literal, line));
 }

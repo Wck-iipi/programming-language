@@ -2,6 +2,7 @@
 #include <any>
 #include <iostream>
 #include <string>
+#include <variant>
 #include <vector>
 
 enum TokenType {
@@ -52,10 +53,11 @@ class Token {
 private:
   TokenType type;
   std::string lexeme;
-  std::any literal;
+  std::variant<double, std::string, std::monostate> literal;
   int line;
 
 public:
   std::string toString();
-  Token(TokenType type, std::string lexeme, std::any literal, int line);
+  Token(TokenType type, std::string lexeme,
+        std::variant<double, std::string, std::monostate> literal, int line);
 };
