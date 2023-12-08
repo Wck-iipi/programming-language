@@ -13,11 +13,11 @@ void runPrompt();
 void run(std::string source);
 
 int main(int argc, char **argv) {
-  if (argc > 1) {
+  if (argc == 1) {
     std::cout << "Usage: cpplox [script]" << std::endl;
     return -1;
   } else if (argc == 2) {
-    runFile(argv[0]);
+    runFile(argv[1]);
   } else {
     runPrompt();
   }
@@ -25,7 +25,8 @@ int main(int argc, char **argv) {
 }
 
 void runFile(std::string path) {
-  std::fstream sourceFile(path, std::ios::binary);
+  std::cout << "Running file: " << path << std::endl;
+  std::fstream sourceFile(path);
   if (sourceFile) {
     std::ostringstream oss;
     oss << sourceFile.rdbuf();

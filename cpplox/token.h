@@ -26,6 +26,8 @@ enum TokenType {
   GREATER_EQUAL,
   LESS,
   LESS_EQUAL,
+  INCREMENT,
+  DECREMENT,
   // Literals.
   IDENTIFIER,
   STRING,

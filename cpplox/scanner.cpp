@@ -43,10 +43,10 @@ void Scanner::scanToken() {
     addToken(DOT, std::monostate{});
     break;
   case '-':
-    addToken(MINUS, std::monostate{});
+    addToken(match('-') ? DECREMENT : MINUS, std::monostate{});
     break;
   case '+':
-    addToken(PLUS, std::monostate{});
+    addToken(match('+') ? INCREMENT : PLUS, std::monostate{});
     break;
   case ';':
     addToken(SEMICOLON, std::monostate{});
