@@ -12,3 +12,5 @@ void defineType(std::ofstream &file, const std::string baseName,
 std::vector<std::string> split(const std::string &inputString,
                                std::string delimiter = " ");
 std::string trim(const std::string &str);
+void defineVisitorAndAccept(std::ofstream &file, const std::string baseName,
+                            const std::vector<std::string> types);
