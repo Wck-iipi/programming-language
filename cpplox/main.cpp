@@ -1,6 +1,8 @@
 // Copyright
+#include "./ExprCpp.h"
 #include "./scanner.h"
 #include "./token.h"
+#include "./tools/ASTPrinter.h"
 #include <fstream>
 #include <iostream>
 #include <ostream>
@@ -13,15 +15,18 @@ void runPrompt();
 void run(std::string source);
 
 int main(int argc, char **argv) {
-  if (argc == 1) {
-    std::cout << "Usage: cpplox [script]" << std::endl;
-    return -1;
-  } else if (argc == 2) {
-    runFile(argv[1]);
-  } else {
-    runPrompt();
-  }
+  call_print();
+
+  // if (argc == 1) {
+  //   std::cout << "Usage: cpplox [script]" << std::endl;
+  //   return -1;
+  // } else if (argc == 2) {
+  //   runFile(argv[1]);
+  // } else {
+  //   runPrompt();
+  // }
   return 0;
+  //
 }
 
 void runFile(std::string path) {
