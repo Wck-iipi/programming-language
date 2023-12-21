@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
           //     , instead of |
           "Binary   : Expr left, Token op, Expr right",
           "Grouping : Expr expression",
-          "Literal  : std::variant<int,double,std::string,bool,std::monostate> value" //NOLINT
+          "Literal  : std::variant<int,double,std::string,bool,std::monostate> value", //NOLINT
           "Unary    : Token op, Expr right"});
 }
 
