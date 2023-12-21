@@ -52,13 +52,16 @@ enum TokenType {
 };
 class Token {
 private:
-  TokenType type;
-  std::variant<double, std::string, std::monostate> literal;
   int line;
 
 public:
+  TokenType type;
+  std::variant<int, double, std::string, bool, std::monostate> literal;
   std::string toString();
   std::string lexeme;
   Token(TokenType type, std::string lexeme,
-        std::variant<double, std::string, std::monostate> literal, int line);
+        std::variant<int, double, std::string, bool, std::monostate> literal,
+        int line);
+  static std::string literalToString(
+      std::variant<int, double, std::string, bool, std::monostate> value);
 };

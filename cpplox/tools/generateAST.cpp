@@ -11,13 +11,15 @@ int main(int argc, char **argv) {
   std::cout << "Generating AST in location:" << std::endl;
   std::string outputDir = argv[1];
   std::cout << outputDir << std::endl;
-  defineAst(outputDir, "Expr",
-            std::vector<std::string>{
-                // add : instead of ->
-                //     , instead of |
-                "Binary   : Expr left, Token op, Expr right",
-                "Grouping : Expr expression", "Literal  : std::any value",
-                "Unary    : Token op, Expr right"});
+  defineAst(
+      outputDir, "Expr",
+      std::vector<std::string>{
+          // add : instead of ->
+          //     , instead of |
+          "Binary   : Expr left, Token op, Expr right",
+          "Grouping : Expr expression",
+          "Literal  : std::variant<int,double,std::string,bool,std::monostate> value" //NOLINT
+          "Unary    : Token op, Expr right"});
 }
 
 void defineAst(const std::string outputDir, const std::string baseName,

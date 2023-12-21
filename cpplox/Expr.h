@@ -25,8 +25,9 @@ public:
 };
 class Literal {
 public:
-  Literal(std::any value) : value(value) {}
-  const std::any value;
+  Literal(std::variant<int, double, std::string, bool, std::monostate> value)
+      : value(value) {}
+  const std::variant<int, double, std::string, bool, std::monostate> value;
 };
 class Unary {
 public:

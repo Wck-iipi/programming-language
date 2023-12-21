@@ -14,8 +14,9 @@ private:
   std::vector<Token> tokens;
   bool isAtEnd(std::string source);
   void scanToken();
-  void addToken(TokenType type,
-                std::variant<double, std::string, std::monostate> literal);
+  void addToken(
+      TokenType type,
+      std::variant<int, double, std::string, bool, std::monostate> literal);
   bool match(char expected);
   void string();
   void number();

@@ -17,14 +17,24 @@ struct VariantToString {
   std::string operator()(const std::string &value) const { return value; }
 
   std::string operator()(std::monostate) const { return "NULL"; }
+
+  std::string operator()(int value) const { return std::to_string(value); }
+
+  std::string operator()(bool value) const { return std::to_string(value); }
 };
+
+std::string Token::literalToString(
+    std::variant<int, double, std::string, bool, std::monostate> value) {
+  return std::visit(VariantToString{}, value);
+}
 
 std::string Token::toString() {
   return tokenType[this->type] + "," + this->lexeme + "," +
-         std::visit(VariantToString{}, this->literal) + "," +
+         Token::literalToString(this->literal) + "," +
          std::to_string(this->line);
 }
-Token::Token(TokenType type, std::string lexeme,
-             std::variant<double, std::string, std::monostate> literal,
-             int line)
+Token::Token(
+    TokenType type, std::string lexeme,
+    std::variant<int, double, std::string, bool, std::monostate> literal,
+    int line)
     : type(type), lexeme(lexeme), literal(literal), line(line) {}
