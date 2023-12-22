@@ -1,6 +1,9 @@
 #pragma once
 #include "./Expr.h"
+#include "./Stmt.h"
+#include "./error.h"
 #include "./token.h"
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -29,8 +32,11 @@ private:
   Token consume(TokenType type, std::string message);
   ParseError error(Token token, std::string message);
   void synchronize();
+  Stmt statement();
+  Stmt printStatement();
+  Stmt expressionStatement();
 
 public:
   Parser(const std::vector<Token> tokens);
-  Expr parse();
+  std::vector<Stmt> parse();
 };

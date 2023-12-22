@@ -1,5 +1,5 @@
 #include "./parser.h"
-#include "./error.h"
+#include <memory>
 
 Parser::Parser(const std::vector<Token> tokens) : tokens(tokens) {}
 
@@ -146,10 +146,34 @@ void Parser::synchronize() {
   }
 }
 
-Expr Parser::parse() {
-  try {
-    return this->expression();
-  } catch (ParseError error) {
-    return std::make_shared<Literal>(std::monostate{});
+std::vector<Stmt> Parser::parse() {
+  std::vector<Stmt> statements;
+  while (!isAtEnd()) {
+    statements.push_back(statement());
   }
+  return statements;
+  // try {
+  //   return this->expression();
+  // } catch (ParseError error) {
+  //   return std::make_shared<Literal>(std::monostate{});
+  // }
+}
+
+Stmt Parser::statement() {
+  if (match({PRINT})) {
+    return printStatement();
+  }
+  return expressionStatement();
+}
+
+Stmt Parser::printStatement() {
+  Expr expr = this->expression();
+  consume(SEMICOLON, "Expected ; after statement");
+  return std::make_shared<Print>(expr);
+}
+
+Stmt Parser::expressionStatement() {
+  Expr expr = this->expression();
+  consume(SEMICOLON, "Expected ; after statement");
+  return std::make_shared<Expression>(expr);
 }

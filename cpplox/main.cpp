@@ -61,8 +61,8 @@ void run(std::string source) {
   Scanner scanner(source);
   std::vector<Token> tokens = scanner.scanTokens();
   Parser parser(tokens);
-  Expr expression = parser.parse();
-  InterpreterHelper::interpret(expression);
+  std::vector<Stmt> stmts = parser.parse();
+  InterpreterHelper::interpret(stmts);
 
   if (Error::hadError)
     return;

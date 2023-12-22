@@ -18,8 +18,12 @@ int main(int argc, char **argv) {
           //     , instead of |
           "Binary   : Expr left, Token op, Expr right",
           "Grouping : Expr expression",
-          "Literal  : std::variant<int,double,std::string,bool,std::monostate> value", //NOLINT
+          "Literal  : std::variant<int,double,std::string,bool,std::monostate> "
+          "value", // NOLINT
           "Unary    : Token op, Expr right"});
+  defineAst(outputDir, "Stmt",
+            std::vector<std::string>{"Expression : Expr expression",
+                                     "Print      : Expr expression"});
 }
 
 void defineAst(const std::string outputDir, const std::string baseName,
@@ -36,6 +40,8 @@ void defineAst(const std::string outputDir, const std::string baseName,
   file << "#include <memory>" << std::endl;
   file << "#include <iostream>" << std::endl;
   file << "#include \"./token.h\"" << std::endl;
+  if (baseName != "Expr")
+    file << "#include \"./Expr.h\"" << std::endl;
   // Anything above is comments and headers
 
   // Forward declaration of classes

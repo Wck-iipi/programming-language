@@ -3,7 +3,7 @@
 #include <memory>
 #include <variant>
 
-struct Interpreter { // Visitor
+struct Interpreter { // Visitor for Expr
   std::variant<int, double, std::string, bool, std::monostate>
   operator()(std::shared_ptr<Literal> expr) {
     return expr->value;
@@ -137,13 +137,25 @@ struct Interpreter { // Visitor
   }
 };
 
-static std::variant<int, double, std::string, bool, std::monostate>
+struct InterpreterStmt {
+  void operator()(std::shared_ptr<Expression> stmt) {
+    InterpreterHelper::evaluate(stmt->expression);
+  }
+  void operator()(std::shared_ptr<Print> stmt) {
+    std::variant<int, double, std::string, bool, std::monostate> value =
+        InterpreterHelper::evaluate(stmt->expression);
+
+    std::cout << Token::literalToString(value);
+  }
+};
+
+std::variant<int, double, std::string, bool, std::monostate>
 InterpreterHelper::evaluate(Expr expr) {
   return std::visit(Interpreter{}, expr);
 }
 
-void InterpreterHelper::interpret(Expr expr) {
-  std::variant<int, double, std::string, bool, std::monostate> result =
-      InterpreterHelper::evaluate(expr);
-  std::cout << Token::literalToString(result);
+void InterpreterHelper::interpret(std::vector<Stmt> stmts) {
+  for (Stmt stmt : stmts) {
+    std::visit(InterpreterStmt{}, stmt);
+  }
 }

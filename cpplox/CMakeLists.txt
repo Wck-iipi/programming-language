@@ -17,6 +17,7 @@ set(SOURCE_FILES
   tools/ASTPrinter.cpp
   parser.cpp
   interpreter.cpp
+  Stmt.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
