@@ -51,10 +51,8 @@ enum TokenType {
   EOF_TOKEN
 };
 class Token {
-private:
-  int line;
-
 public:
+  int line;
   TokenType type;
   std::variant<int, double, std::string, bool, std::monostate> literal;
   std::string toString();

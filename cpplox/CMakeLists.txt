@@ -15,6 +15,7 @@ set(SOURCE_FILES
   token.cpp
   Expr.cpp
   tools/ASTPrinter.cpp
+  parser.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

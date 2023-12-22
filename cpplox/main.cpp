@@ -1,8 +1,10 @@
 // Copyright
 #include "./Expr.h"
+#include "./error.h"
 #include "./scanner.h"
 #include "./token.h"
 #include "./tools/ASTPrinter.h"
+#include "parser.h"
 #include <fstream>
 #include <iostream>
 #include <ostream>
@@ -15,18 +17,17 @@ void runPrompt();
 void run(std::string source);
 
 int main(int argc, char **argv) {
-  call_print();
+  // ASTPrinterHelper::call_print(); // print the AST
 
-  // if (argc == 1) {
-  //   std::cout << "Usage: cpplox [script]" << std::endl;
-  //   return -1;
-  // } else if (argc == 2) {
-  //   runFile(argv[1]);
-  // } else {
-  //   runPrompt();
-  // }
+  if (argc == 1) {
+    runPrompt();
+  } else if (argc == 2) {
+    runFile(argv[1]);
+  } else {
+    std::cout << "Usage: cpplox [script]" << std::endl;
+    return -1;
+  }
   return 0;
-  //
 }
 
 void runFile(std::string path) {
@@ -51,13 +52,22 @@ void runPrompt() {
     if (line.empty())
       break;
     run(line);
+    std::cout << std::endl;
   }
 }
 
 void run(std::string source) {
   Scanner scanner(source);
   std::vector<Token> tokens = scanner.scanTokens();
-  for (Token token : tokens) {
-    std::cout << token.toString() << std::endl;
-  }
+  Parser parser(tokens);
+  Expr expression = parser.parse();
+
+  if (Error::hadError)
+    return;
+
+  std::cout << ASTPrinterHelper::print(expression);
+
+  // for (Token token : tokens) {
+  //   std::cout << token.toString() << std::endl;
+  // }
 }

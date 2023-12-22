@@ -1,14 +1,13 @@
 #include "./ASTPrinter.h"
 
-std::string parenthesize(std::string name, std::vector<Expr> exprs);
-
 struct ASTPrinterExpr {
   std::string operator()(std::shared_ptr<Binary> expr) {
-    return parenthesize(expr->op.lexeme, {expr->left, expr->right});
+    return ASTPrinterHelper::parenthesize(expr->op.lexeme,
+                                          {expr->left, expr->right});
   }
 
   std::string operator()(std::shared_ptr<Grouping> expr) {
-    return parenthesize("group", {expr->expression});
+    return ASTPrinterHelper::parenthesize("group", {expr->expression});
   }
   //
   std::string operator()(std::shared_ptr<Literal> expr) {
@@ -18,11 +17,12 @@ struct ASTPrinterExpr {
   }
 
   std::string operator()(std::shared_ptr<Unary> expr) {
-    return parenthesize(expr->op.lexeme, {expr->right});
+    return ASTPrinterHelper::parenthesize(expr->op.lexeme, {expr->right});
   }
 };
 
-std::string parenthesize(std::string name, std::vector<Expr> exprs) {
+std::string ASTPrinterHelper::parenthesize(std::string name,
+                                           std::vector<Expr> exprs) {
   std::string result = "(" + name;
   for (auto &expr : exprs) {
     result += " ";
@@ -32,9 +32,11 @@ std::string parenthesize(std::string name, std::vector<Expr> exprs) {
 
   return result;
 }
-std::string print(Expr expr) { return std::visit(ASTPrinterExpr{}, expr); }
+std::string ASTPrinterHelper::print(Expr expr) {
+  return std::visit(ASTPrinterExpr{}, expr);
+}
 
-void call_print() {
+void ASTPrinterHelper::call_print() {
   Expr a =
       std::make_shared<Unary>(Token(TokenType::MINUS, "-", std::monostate{}, 1),
                               std::make_shared<Literal>(123));
@@ -42,5 +44,5 @@ void call_print() {
   Expr expression = std::make_shared<Binary>(
       a, Token(TokenType::STAR, "*", std::monostate{}, 1), b);
 
-  std::cout << print(expression);
+  std::cout << ASTPrinterHelper::print(expression);
 }

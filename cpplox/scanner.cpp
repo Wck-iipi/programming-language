@@ -97,8 +97,8 @@ void Scanner::scanToken() {
 }
 
 void Scanner::identifier() {
-  while ((isalnum(source.at(current)) || source.at(current) == '_') &&
-         !isAtEnd(source)) {
+  while (!isAtEnd(source) &&
+         (isalnum(source.at(current)) || source.at(current) == '_')) {
     current++;
   }
   std::string text = source.substr(start, current - start);
