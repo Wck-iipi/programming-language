@@ -102,7 +102,7 @@ Expr Parser::primary() {
     consume(RIGHT_PAREN, "Expect ')' after expression.");
     return std::make_shared<Grouping>(expr);
   }
-  throw this->error(peek(), "Expect expression.");
+  throw this->error(peek(), "Expected expression.");
 }
 
 Token Parser::consume(TokenType type, std::string message) {

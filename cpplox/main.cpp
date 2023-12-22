@@ -1,10 +1,11 @@
 // Copyright
 #include "./Expr.h"
 #include "./error.h"
+#include "./interpreter.h"
+#include "./parser.h"
 #include "./scanner.h"
 #include "./token.h"
 #include "./tools/ASTPrinter.h"
-#include "parser.h"
 #include <fstream>
 #include <iostream>
 #include <ostream>
@@ -61,11 +62,12 @@ void run(std::string source) {
   std::vector<Token> tokens = scanner.scanTokens();
   Parser parser(tokens);
   Expr expression = parser.parse();
+  InterpreterHelper::interpret(expression);
 
   if (Error::hadError)
     return;
 
-  std::cout << ASTPrinterHelper::print(expression);
+  // std::cout << ASTPrinterHelper::print(expression);
 
   // for (Token token : tokens) {
   //   std::cout << token.toString() << std::endl;

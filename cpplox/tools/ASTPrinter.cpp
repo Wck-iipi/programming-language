@@ -1,6 +1,6 @@
 #include "./ASTPrinter.h"
 
-struct ASTPrinterExpr {
+struct ASTPrinterExpr { // Visitor
   std::string operator()(std::shared_ptr<Binary> expr) {
     return ASTPrinterHelper::parenthesize(expr->op.lexeme,
                                           {expr->left, expr->right});
