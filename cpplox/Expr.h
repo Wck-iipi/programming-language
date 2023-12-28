@@ -5,12 +5,22 @@
 #include <any>
 #include <iostream>
 #include <memory>
+#include <optional>
+class Assign;
 class Binary;
 class Grouping;
 class Literal;
 class Unary;
-using Expr = std::variant<std::shared_ptr<Binary>, std::shared_ptr<Grouping>,
-                          std::shared_ptr<Literal>, std::shared_ptr<Unary>>;
+class Variable;
+using Expr = std::variant<std::shared_ptr<Assign>, std::shared_ptr<Binary>,
+                          std::shared_ptr<Grouping>, std::shared_ptr<Literal>,
+                          std::shared_ptr<Unary>, std::shared_ptr<Variable>>;
+class Assign {
+public:
+  Assign(Token left, Expr right) : left(left), right(right) {}
+  const Token left;
+  const Expr right;
+};
 class Binary {
 public:
   Binary(Expr left, Token op, Expr right) : left(left), op(op), right(right) {}
@@ -34,4 +44,9 @@ public:
   Unary(Token op, Expr right) : op(op), right(right) {}
   const Token op;
   const Expr right;
+};
+class Variable {
+public:
+  Variable(Token name) : name(name) {}
+  const Token name;
 };

@@ -1,9 +1,24 @@
 #include "./parser.h"
-#include <memory>
 
 Parser::Parser(const std::vector<Token> tokens) : tokens(tokens) {}
 
-Expr Parser::expression() { return this->equality(); }
+Expr Parser::expression() { return this->assignment(); }
+
+Expr Parser::assignment() {
+  Expr expr = this->equality();
+
+  if (match({EQUAL})) {
+    Token op = this->previous();
+    Expr right = this->assignment();
+
+    if (std::holds_alternative<std::shared_ptr<Variable>>(expr)) {
+      Token name = std::get<std::shared_ptr<Variable>>(expr)->name;
+      return std::make_shared<Variable>(name);
+    }
+    error(op, "Invalid assignment target");
+  }
+  return expr;
+}
 
 Expr Parser::equality() {
   Expr expr = this->comparison();
@@ -17,13 +32,12 @@ Expr Parser::equality() {
 }
 
 bool Parser::match(std::vector<TokenType> types) {
-  for (const auto &type : types) {
+  for (const TokenType &type : types) {
     if (this->check(type)) {
       this->advance();
       return true;
     }
   }
-
   return false;
 }
 
@@ -94,8 +108,10 @@ Expr Parser::primary() {
   if (this->match({NIL}))
     return std::make_shared<Literal>(std::monostate{});
   if (this->match({NUMBER, STRING})) {
-    return std::make_shared<Literal>(
-        previous().literal); // change this as this is std::any of std::variant
+    return std::make_shared<Literal>(previous().literal);
+  }
+  if (this->match({IDENTIFIER})) {
+    return std::make_shared<Variable>(previous());
   }
   if (this->match({LEFT_PAREN})) {
     Expr expr = expression();
@@ -149,7 +165,7 @@ void Parser::synchronize() {
 std::vector<Stmt> Parser::parse() {
   std::vector<Stmt> statements;
   while (!isAtEnd()) {
-    statements.push_back(statement());
+    statements.push_back(declaration());
   }
   return statements;
   // try {
@@ -157,6 +173,29 @@ std::vector<Stmt> Parser::parse() {
   // } catch (ParseError error) {
   //   return std::make_shared<Literal>(std::monostate{});
   // }
+}
+
+Stmt Parser::declaration() {
+  try {
+    if (match({VAR})) {
+      return varDeclaration();
+    }
+    return statement();
+  } catch (ParseError error) {
+    // synchronize();
+  }
+}
+
+Stmt Parser::varDeclaration() {
+  Token name = consume(IDENTIFIER, "Enter valid identifier(name of variable)");
+
+  Expr initializer = std::make_shared<Literal>(std::monostate{});
+
+  if (match({EQUAL})) {
+    initializer = expression();
+  }
+  consume(SEMICOLON, "Expected semicolon at the end of line");
+  return std::make_shared<Var>(name, initializer);
 }
 
 Stmt Parser::statement() {

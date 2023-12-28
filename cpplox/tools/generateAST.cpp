@@ -16,14 +16,19 @@ int main(int argc, char **argv) {
       std::vector<std::string>{
           // add : instead of ->
           //     , instead of |
+          "Assign : Token left, Expr right",
           "Binary   : Expr left, Token op, Expr right",
           "Grouping : Expr expression",
-          "Literal  : std::variant<int,double,std::string,bool,std::monostate> "
-          "value", // NOLINT
-          "Unary    : Token op, Expr right"});
+          "Literal  : std::variant<int,double,std::string,bool,std::monostate> value", // NOLINT
+          "Unary    : Token op, Expr right",
+          "Variable : Token name",
+      });
   defineAst(outputDir, "Stmt",
-            std::vector<std::string>{"Expression : Expr expression",
-                                     "Print      : Expr expression"});
+            std::vector<std::string>{
+                "Expression : Expr expression",
+                "Print      : Expr expression",
+                "Var        : Token name, std::optional<Expr> initializer",
+            });
 }
 
 void defineAst(const std::string outputDir, const std::string baseName,
@@ -39,6 +44,7 @@ void defineAst(const std::string outputDir, const std::string baseName,
   file << "#include <any>" << std::endl;
   file << "#include <memory>" << std::endl;
   file << "#include <iostream>" << std::endl;
+  file << "#include <optional>" << std::endl;
   file << "#include \"./token.h\"" << std::endl;
   if (baseName != "Expr")
     file << "#include \"./Expr.h\"" << std::endl;

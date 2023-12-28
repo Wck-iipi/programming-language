@@ -6,9 +6,12 @@
 #include <any>
 #include <iostream>
 #include <memory>
+#include <optional>
 class Expression;
 class Print;
-using Stmt = std::variant<std::shared_ptr<Expression>, std::shared_ptr<Print>>;
+class Var;
+using Stmt = std::variant<std::shared_ptr<Expression>, std::shared_ptr<Print>,
+                          std::shared_ptr<Var>>;
 class Expression {
 public:
   Expression(Expr expression) : expression(expression) {}
@@ -18,4 +21,11 @@ class Print {
 public:
   Print(Expr expression) : expression(expression) {}
   const Expr expression;
+};
+class Var {
+public:
+  Var(Token name, std::optional<Expr> initializer)
+      : name(name), initializer(initializer) {}
+  const Token name;
+  const std::optional<Expr> initializer;
 };

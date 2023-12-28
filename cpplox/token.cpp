@@ -37,4 +37,4 @@ Token::Token(
     TokenType type, std::string lexeme,
     std::variant<int, double, std::string, bool, std::monostate> literal,
     int line)
-    : type(type), lexeme(lexeme), literal(literal), line(line) {}
+    : line(line), type(type), literal(literal), lexeme(lexeme) {}

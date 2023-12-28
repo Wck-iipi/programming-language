@@ -5,6 +5,7 @@
 #include "./token.h"
 #include <memory>
 #include <string>
+#include <variant>
 #include <vector>
 
 class Parser {
@@ -19,9 +20,14 @@ private:
   int current = 0;
   bool check(TokenType type);
   bool isAtEnd();
+
   Token advance();
   Token peek();
   Token previous();
+  Token consume(TokenType type, std::string message);
+  ParseError error(Token token, std::string message);
+  void synchronize();
+
   Expr expression();
   Expr equality();
   Expr comparison();
@@ -29,12 +35,13 @@ private:
   Expr factor();
   Expr unary();
   Expr primary();
-  Token consume(TokenType type, std::string message);
-  ParseError error(Token token, std::string message);
-  void synchronize();
+  Expr assignment();
+
   Stmt statement();
   Stmt printStatement();
   Stmt expressionStatement();
+  Stmt declaration();
+  Stmt varDeclaration();
 
 public:
   Parser(const std::vector<Token> tokens);

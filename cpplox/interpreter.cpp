@@ -1,9 +1,15 @@
 #include "./interpreter.h"
-#include "./error.h"
-#include <memory>
-#include <variant>
+Environment environment;
 
 struct Interpreter { // Visitor for Expr
+  std::variant<int, double, std::string, bool, std::monostate>
+  operator()(std::shared_ptr<Assign> expr) {
+    std::variant<int, double, std::string, bool, std::monostate> value =
+        InterpreterHelper::evaluate(expr);
+    environment.assign(expr->left, value);
+    return value;
+  }
+
   std::variant<int, double, std::string, bool, std::monostate>
   operator()(std::shared_ptr<Literal> expr) {
     return expr->value;
@@ -135,6 +141,10 @@ struct Interpreter { // Visitor for Expr
     }
     return "Unreachable code";
   }
+  std::variant<int, double, std::string, bool, std::monostate>
+  operator()(std::shared_ptr<Variable> expr) {
+    return environment.get(expr->name);
+  }
 };
 
 struct InterpreterStmt {
@@ -144,8 +154,14 @@ struct InterpreterStmt {
   void operator()(std::shared_ptr<Print> stmt) {
     std::variant<int, double, std::string, bool, std::monostate> value =
         InterpreterHelper::evaluate(stmt->expression);
-
-    std::cout << Token::literalToString(value);
+    std::cout << Token::literalToString(value) << std::endl;
+  }
+  void operator()(std::shared_ptr<Var> stmt) {
+    std::variant<int, double, std::string, bool, std::monostate> value;
+    if (stmt->initializer.has_value()) {
+      value = InterpreterHelper::evaluate(stmt->initializer.value());
+    }
+    environment.define(stmt->name.lexeme, value);
   }
 };
 

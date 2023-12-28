@@ -1,9 +1,12 @@
 #pragma once
 #include "./Expr.h"
 #include "./Stmt.h"
+#include "./environment.h"
+#include "./error.h"
 #include <any>
 #include <memory>
 #include <string>
+#include <variant>
 #include <vector>
 
 struct Interpreter; // Visitor for Expr
