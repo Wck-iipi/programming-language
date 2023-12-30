@@ -1,3 +1,4 @@
+*.lox
 # Debug files
 *.dSYM/
 */build/

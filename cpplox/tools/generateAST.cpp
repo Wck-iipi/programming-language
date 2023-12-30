@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
       });
   defineAst(outputDir, "Stmt",
             std::vector<std::string>{
+                "Block      : std::vector<Stmt> statements",
                 "Expression : Expr expression",
                 "Print      : Expr expression",
                 "Var        : Token name, std::optional<Expr> initializer",

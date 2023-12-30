@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 
 class Environment {
@@ -11,6 +12,11 @@ class Environment {
       values;
 
 public:
+  std::optional<std::shared_ptr<Environment>> enclosing;
+  Environment() {}
+
+  Environment(Environment &other)
+      : values(other.values), enclosing(other.enclosing) {}
   void
   define(std::string name,
          std::variant<int, double, std::string, bool, std::monostate> value);

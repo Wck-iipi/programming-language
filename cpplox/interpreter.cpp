@@ -5,7 +5,7 @@ struct Interpreter { // Visitor for Expr
   std::variant<int, double, std::string, bool, std::monostate>
   operator()(std::shared_ptr<Assign> expr) {
     std::variant<int, double, std::string, bool, std::monostate> value =
-        InterpreterHelper::evaluate(expr);
+        InterpreterHelper::evaluate(expr->right);
     environment.assign(expr->left, value);
     return value;
   }
@@ -147,6 +147,8 @@ struct Interpreter { // Visitor for Expr
   }
 };
 
+void executeBlock(std::vector<Stmt> statements, Environment newEnvironment);
+
 struct InterpreterStmt {
   void operator()(std::shared_ptr<Expression> stmt) {
     InterpreterHelper::evaluate(stmt->expression);
@@ -160,10 +162,27 @@ struct InterpreterStmt {
     std::variant<int, double, std::string, bool, std::monostate> value;
     if (stmt->initializer.has_value()) {
       value = InterpreterHelper::evaluate(stmt->initializer.value());
+    } else {
+      value = std::monostate{};
     }
     environment.define(stmt->name.lexeme, value);
   }
+  void operator()(std::shared_ptr<Block> stmt) {
+    executeBlock(stmt->statements, Environment(environment));
+  }
 };
+void executeBlock(std::vector<Stmt> statements, Environment newEnvironment) {
+  Environment previous = environment;
+  try {
+    environment = newEnvironment;
+    for (Stmt statement : statements) {
+      std::visit(InterpreterStmt{}, statement);
+    }
+    environment = previous;
+  } catch (std::exception &e) {
+    std::cerr << "Caught exception " << e.what() << std::endl;
+  }
+}
 
 std::variant<int, double, std::string, bool, std::monostate>
 InterpreterHelper::evaluate(Expr expr) {

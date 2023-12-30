@@ -7,11 +7,17 @@
 #include <iostream>
 #include <memory>
 #include <optional>
+class Block;
 class Expression;
 class Print;
 class Var;
-using Stmt = std::variant<std::shared_ptr<Expression>, std::shared_ptr<Print>,
-                          std::shared_ptr<Var>>;
+using Stmt = std::variant<std::shared_ptr<Block>, std::shared_ptr<Expression>,
+                          std::shared_ptr<Print>, std::shared_ptr<Var>>;
+class Block {
+public:
+  Block(std::vector<Stmt> statements) : statements(statements) {}
+  const std::vector<Stmt> statements;
+};
 class Expression {
 public:
   Expression(Expr expression) : expression(expression) {}

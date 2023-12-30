@@ -13,7 +13,7 @@ Expr Parser::assignment() {
 
     if (std::holds_alternative<std::shared_ptr<Variable>>(expr)) {
       Token name = std::get<std::shared_ptr<Variable>>(expr)->name;
-      return std::make_shared<Variable>(name);
+      return std::make_shared<Assign>(name, right);
     }
     error(op, "Invalid assignment target");
   }
@@ -23,7 +23,7 @@ Expr Parser::assignment() {
 Expr Parser::equality() {
   Expr expr = this->comparison();
 
-  while (match({BANG_EQUAL, EQUAL})) {
+  while (match({BANG_EQUAL, EQUAL_EQUAL})) {
     Token op = this->previous();
     Expr right = this->comparison();
     expr = std::make_shared<Binary>(expr, op, right);
@@ -180,16 +180,29 @@ Stmt Parser::declaration() {
     if (match({VAR})) {
       return varDeclaration();
     }
+    if (match({LEFT_BRACE})) {
+      std::vector<Stmt> statements = block();
+      return std::make_shared<Block>(statements);
+    }
     return statement();
   } catch (ParseError error) {
     // synchronize();
   }
 }
 
+std::vector<Stmt> Parser::block() {
+  std::vector<Stmt> statements;
+  while (!check(RIGHT_BRACE) && !isAtEnd()) {
+    statements.push_back(declaration());
+  }
+  consume(RIGHT_BRACE, "Expected '}' after block");
+  return statements;
+}
+
 Stmt Parser::varDeclaration() {
   Token name = consume(IDENTIFIER, "Enter valid identifier(name of variable)");
 
-  Expr initializer = std::make_shared<Literal>(std::monostate{});
+  std::optional<Expr> initializer;
 
   if (match({EQUAL})) {
     initializer = expression();
