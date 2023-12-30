@@ -16,7 +16,7 @@ private:
   void scanToken();
   void addToken(
       TokenType type,
-      std::variant<int, double, std::string, bool, std::monostate> literal);
+      loxTypes literal);
   bool match(char expected);
   void string();
   void number();

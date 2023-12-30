@@ -35,9 +35,9 @@ public:
 };
 class Literal {
 public:
-  Literal(std::variant<int, double, std::string, bool, std::monostate> value)
+  Literal(loxTypes value)
       : value(value) {}
-  const std::variant<int, double, std::string, bool, std::monostate> value;
+  const loxTypes value;
 };
 class Unary {
 public:

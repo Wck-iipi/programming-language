@@ -2,27 +2,27 @@
 Environment environment;
 
 struct Interpreter { // Visitor for Expr
-  std::variant<int, double, std::string, bool, std::monostate>
+  loxTypes
   operator()(std::shared_ptr<Assign> expr) {
-    std::variant<int, double, std::string, bool, std::monostate> value =
+    loxTypes value =
         InterpreterHelper::evaluate(expr->right);
     environment.assign(expr->left, value);
     return value;
   }
 
-  std::variant<int, double, std::string, bool, std::monostate>
+  loxTypes
   operator()(std::shared_ptr<Literal> expr) {
     return expr->value;
   }
 
-  std::variant<int, double, std::string, bool, std::monostate>
+  loxTypes
   operator()(std::shared_ptr<Grouping> expr) {
     return InterpreterHelper::evaluate(expr->expression);
   }
 
-  std::variant<int, double, std::string, bool, std::monostate>
+  loxTypes
   operator()(std::shared_ptr<Unary> expr) {
-    std::variant<int, double, std::string, bool, std::monostate> right =
+    loxTypes right =
         InterpreterHelper::evaluate(expr->right);
 
     switch (expr->op.type) {
@@ -48,11 +48,11 @@ struct Interpreter { // Visitor for Expr
 
     return "Not reachable";
   }
-  std::variant<int, double, std::string, bool, std::monostate>
+  loxTypes
   operator()(std::shared_ptr<Binary> expr) {
-    std::variant<int, double, std::string, bool, std::monostate> left =
+    loxTypes left =
         InterpreterHelper::evaluate(expr->left);
-    std::variant<int, double, std::string, bool, std::monostate> right =
+    loxTypes right =
         InterpreterHelper::evaluate(expr->right);
 
     if (std::holds_alternative<double>(left) &&
@@ -141,7 +141,7 @@ struct Interpreter { // Visitor for Expr
     }
     return "Unreachable code";
   }
-  std::variant<int, double, std::string, bool, std::monostate>
+  loxTypes
   operator()(std::shared_ptr<Variable> expr) {
     return environment.get(expr->name);
   }
@@ -154,12 +154,12 @@ struct InterpreterStmt {
     InterpreterHelper::evaluate(stmt->expression);
   }
   void operator()(std::shared_ptr<Print> stmt) {
-    std::variant<int, double, std::string, bool, std::monostate> value =
+    loxTypes value =
         InterpreterHelper::evaluate(stmt->expression);
     std::cout << Token::literalToString(value) << std::endl;
   }
   void operator()(std::shared_ptr<Var> stmt) {
-    std::variant<int, double, std::string, bool, std::monostate> value;
+    loxTypes value;
     if (stmt->initializer.has_value()) {
       value = InterpreterHelper::evaluate(stmt->initializer.value());
     } else {
@@ -184,7 +184,7 @@ void executeBlock(std::vector<Stmt> statements, Environment newEnvironment) {
   }
 }
 
-std::variant<int, double, std::string, bool, std::monostate>
+loxTypes
 InterpreterHelper::evaluate(Expr expr) {
   return std::visit(Interpreter{}, expr);
 }

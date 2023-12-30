@@ -138,7 +138,7 @@ bool Scanner::match(char expected) {
 
 void Scanner::addToken(
     TokenType type,
-    std::variant<int, double, std::string, bool, std::monostate> literal) {
+    loxTypes literal) {
   std::string text = source.substr(start, current - start);
   tokens.push_back(Token(type, text, literal, line));
 }

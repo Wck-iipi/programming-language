@@ -3,6 +3,7 @@
 #include <string>
 #include <variant>
 #include <vector>
+using loxTypes = std::variant<int, double, std::string, bool, std::monostate>;
 
 enum TokenType {
   LEFT_PAREN,
@@ -54,12 +55,9 @@ class Token {
 public:
   int line;
   TokenType type;
-  std::variant<int, double, std::string, bool, std::monostate> literal;
+  loxTypes literal;
   std::string toString();
   std::string lexeme;
-  Token(TokenType type, std::string lexeme,
-        std::variant<int, double, std::string, bool, std::monostate> literal,
-        int line);
-  static std::string literalToString(
-      std::variant<int, double, std::string, bool, std::monostate> value);
+  Token(TokenType type, std::string lexeme, loxTypes literal, int line);
+  static std::string literalToString(loxTypes value);
 };

@@ -2,7 +2,7 @@
 
 void Environment::define(
     std::string name,
-    std::variant<int, double, std::string, bool, std::monostate> value) {
+    loxTypes value) {
   try {
     if (this->values.count(name) > 0) {
       // TODO: throw error when same variable in same scope is redefined
@@ -16,7 +16,7 @@ void Environment::define(
   }
 }
 
-std::variant<int, double, std::string, bool, std::monostate>
+loxTypes
 Environment::get(Token name) {
   try {
     if (this->values.count(name.lexeme) > 0) {
@@ -34,7 +34,7 @@ Environment::get(Token name) {
 
 void Environment::assign(
     Token name,
-    std::variant<int, double, std::string, bool, std::monostate> value) {
+    loxTypes value) {
   if (this->values.count(name.lexeme) > 0) {
     this->values[name.lexeme] = value;
     return;

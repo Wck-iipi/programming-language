@@ -24,7 +24,7 @@ struct VariantToString {
 };
 
 std::string Token::literalToString(
-    std::variant<int, double, std::string, bool, std::monostate> value) {
+    loxTypes value) {
   return std::visit(VariantToString{}, value);
 }
 
@@ -35,6 +35,6 @@ std::string Token::toString() {
 }
 Token::Token(
     TokenType type, std::string lexeme,
-    std::variant<int, double, std::string, bool, std::monostate> literal,
+    loxTypes literal,
     int line)
     : line(line), type(type), literal(literal), lexeme(lexeme) {}
