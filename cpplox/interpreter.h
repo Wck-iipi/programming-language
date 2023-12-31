@@ -13,8 +13,8 @@ struct Interpreter; // Visitor for Expr
 struct InterpreterStmt;
 
 namespace InterpreterHelper {
-loxTypes
-evaluate(Expr expr);
+struct loxTypesToBool;
+loxTypes evaluate(Expr expr);
 void interpret(std::vector<Stmt> stmts);
 }; // namespace InterpreterHelper
 namespace InterpreterStmtHelper {};

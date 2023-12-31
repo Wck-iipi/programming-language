@@ -35,8 +35,7 @@ public:
 };
 class Literal {
 public:
-  Literal(loxTypes value)
-      : value(value) {}
+  Literal(loxTypes value) : value(value) {}
   const loxTypes value;
 };
 class Unary {

@@ -7,12 +7,22 @@
 #include <iostream>
 #include <memory>
 #include <optional>
+class If;
 class Block;
 class Expression;
 class Print;
 class Var;
-using Stmt = std::variant<std::shared_ptr<Block>, std::shared_ptr<Expression>,
-                          std::shared_ptr<Print>, std::shared_ptr<Var>>;
+using Stmt = std::variant<std::shared_ptr<If>, std::shared_ptr<Block>,
+                          std::shared_ptr<Expression>, std::shared_ptr<Print>,
+                          std::shared_ptr<Var>>;
+class If {
+public:
+  If(Expr condition, Stmt thenBranch, std::optional<Stmt> elseBranch)
+      : condition(condition), thenBranch(thenBranch), elseBranch(elseBranch) {}
+  const Expr condition;
+  const Stmt thenBranch;
+  const std::optional<Stmt> elseBranch;
+};
 class Block {
 public:
   Block(std::vector<Stmt> statements) : statements(statements) {}

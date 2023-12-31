@@ -180,10 +180,6 @@ Stmt Parser::declaration() {
     if (match({VAR})) {
       return varDeclaration();
     }
-    if (match({LEFT_BRACE})) {
-      std::vector<Stmt> statements = block();
-      return std::make_shared<Block>(statements);
-    }
     return statement();
   } catch (ParseError error) {
     // synchronize();
@@ -215,7 +211,27 @@ Stmt Parser::statement() {
   if (match({PRINT})) {
     return printStatement();
   }
+  if (match({IF})) {
+    return ifStatement();
+  }
+  if (match({LEFT_BRACE})) {
+    std::vector<Stmt> statements = block();
+    return std::make_shared<Block>(statements);
+  }
   return expressionStatement();
+}
+
+Stmt Parser::ifStatement() {
+  consume(LEFT_PAREN, "Expected '(' after if");
+  Expr expr = expression();
+  consume(RIGHT_PAREN, "Expected ')' after expression");
+  Stmt thenBranch = statement();
+  std::optional<Stmt> elseBranch;
+  if (match({ELSE})) {
+    elseBranch = statement();
+  }
+
+  return std::make_shared<If>(expr, thenBranch, elseBranch);
 }
 
 Stmt Parser::printStatement() {

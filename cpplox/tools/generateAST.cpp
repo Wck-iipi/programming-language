@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
             });
   defineAst(outputDir, "Stmt",
             std::vector<std::string>{
+                "If : Expr condition, Stmt thenBranch, std::optional<Stmt> elseBranch", //NOLINT
                 "Block      : std::vector<Stmt> statements",
                 "Expression : Expr expression",
                 "Print      : Expr expression",

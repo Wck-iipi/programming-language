@@ -42,6 +42,7 @@ private:
   Stmt expressionStatement();
   Stmt declaration();
   Stmt varDeclaration();
+  Stmt ifStatement();
   std::vector<Stmt> block();
 
 public:

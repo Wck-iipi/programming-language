@@ -20,11 +20,10 @@ struct VariantToString {
 
   std::string operator()(int value) const { return std::to_string(value); }
 
-  std::string operator()(bool value) const { return std::to_string(value); }
+  std::string operator()(bool value) const { return value ? "true" : "false"; }
 };
 
-std::string Token::literalToString(
-    loxTypes value) {
+std::string Token::literalToString(loxTypes value) {
   return std::visit(VariantToString{}, value);
 }
 
@@ -33,8 +32,5 @@ std::string Token::toString() {
          Token::literalToString(this->literal) + "," +
          std::to_string(this->line);
 }
-Token::Token(
-    TokenType type, std::string lexeme,
-    loxTypes literal,
-    int line)
+Token::Token(TokenType type, std::string lexeme, loxTypes literal, int line)
     : line(line), type(type), literal(literal), lexeme(lexeme) {}
