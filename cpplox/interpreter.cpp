@@ -1,6 +1,18 @@
 #include "./interpreter.h"
 Environment environment;
 
+struct InterpreterHelper::loxTypesToBool {
+  bool operator()(double value) const { return value; }
+
+  bool operator()(const std::string &value) const { return value != "0"; }
+
+  bool operator()(std::monostate) const { return false; }
+
+  bool operator()(int value) const { return value; }
+
+  bool operator()(bool value) const { return value; }
+};
+
 struct Interpreter { // Visitor for Expr
   loxTypes operator()(std::shared_ptr<Assign> expr) {
     loxTypes value = InterpreterHelper::evaluate(expr->right);
@@ -133,21 +145,23 @@ struct Interpreter { // Visitor for Expr
   loxTypes operator()(std::shared_ptr<Variable> expr) {
     return environment.get(expr->name);
   }
+  loxTypes operator()(std::shared_ptr<Logical> expr) {
+    loxTypes left = InterpreterHelper::evaluate(expr->left);
+
+    if (expr->op.type == OR) {
+      if (std::visit(InterpreterHelper::loxTypesToBool{}, left)) {
+        return left;
+      } else {
+        if (!std::visit(InterpreterHelper::loxTypesToBool{}, left)) {
+          return left;
+        }
+      }
+    }
+    return InterpreterHelper::evaluate(expr->right);
+  }
 };
 
 void executeBlock(std::vector<Stmt> statements, Environment newEnvironment);
-
-struct InterpreterHelper::loxTypesToBool {
-  bool operator()(double value) const { return value; }
-
-  bool operator()(const std::string &value) const { return value != "0"; }
-
-  bool operator()(std::monostate) const { return false; }
-
-  bool operator()(int value) const { return value; }
-
-  bool operator()(bool value) const { return value; }
-};
 
 struct InterpreterStmt {
   void operator()(std::shared_ptr<Expression> stmt) {

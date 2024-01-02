@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
                 // add : instead of ->
                 //     , instead of |
                 "Assign : Token left, Expr right",
+                "Logical: Expr left, Token op, Expr right",
                 "Binary   : Expr left, Token op, Expr right",
                 "Grouping : Expr expression",
                 "Literal  : loxTypes value",
@@ -24,7 +25,7 @@ int main(int argc, char **argv) {
             });
   defineAst(outputDir, "Stmt",
             std::vector<std::string>{
-                "If : Expr condition, Stmt thenBranch, std::optional<Stmt> elseBranch", //NOLINT
+                "If : Expr condition, Stmt thenBranch, std::optional<Stmt> elseBranch", // NOLINT
                 "Block      : std::vector<Stmt> statements",
                 "Expression : Expr expression",
                 "Print      : Expr expression",

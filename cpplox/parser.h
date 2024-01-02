@@ -36,6 +36,8 @@ private:
   Expr unary();
   Expr primary();
   Expr assignment();
+  Expr orExpr();
+  Expr andExpr();
 
   Stmt statement();
   Stmt printStatement();

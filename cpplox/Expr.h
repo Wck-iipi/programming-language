@@ -7,18 +7,27 @@
 #include <memory>
 #include <optional>
 class Assign;
+class Logical;
 class Binary;
 class Grouping;
 class Literal;
 class Unary;
 class Variable;
-using Expr = std::variant<std::shared_ptr<Assign>, std::shared_ptr<Binary>,
-                          std::shared_ptr<Grouping>, std::shared_ptr<Literal>,
-                          std::shared_ptr<Unary>, std::shared_ptr<Variable>>;
+using Expr = std::variant<std::shared_ptr<Assign>, std::shared_ptr<Logical>,
+                          std::shared_ptr<Binary>, std::shared_ptr<Grouping>,
+                          std::shared_ptr<Literal>, std::shared_ptr<Unary>,
+                          std::shared_ptr<Variable>>;
 class Assign {
 public:
   Assign(Token left, Expr right) : left(left), right(right) {}
   const Token left;
+  const Expr right;
+};
+class Logical {
+public:
+  Logical(Expr left, Token op, Expr right) : left(left), op(op), right(right) {}
+  const Expr left;
+  const Token op;
   const Expr right;
 };
 class Binary {

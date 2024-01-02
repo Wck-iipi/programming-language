@@ -5,7 +5,7 @@ Parser::Parser(const std::vector<Token> tokens) : tokens(tokens) {}
 Expr Parser::expression() { return this->assignment(); }
 
 Expr Parser::assignment() {
-  Expr expr = this->equality();
+  Expr expr = this->orExpr();
 
   if (match({EQUAL})) {
     Token op = this->previous();
@@ -87,6 +87,28 @@ Expr Parser::factor() {
     Token op = this->previous();
     Expr right = this->unary();
     expr = std::make_shared<Binary>(expr, op, right);
+  }
+  return expr;
+}
+
+Expr Parser::orExpr() {
+  Expr expr = andExpr();
+
+  while (match({OR})) {
+    Token op = previous();
+    Expr right = andExpr();
+    expr = std::make_shared<Logical>(expr, op, right);
+  }
+  return expr;
+}
+
+Expr Parser::andExpr() {
+  Expr expr = this->equality();
+
+  while (match({AND})) {
+    Token op = previous();
+    Expr right = andExpr();
+    expr = std::make_shared<Logical>(expr, op, right);
   }
   return expr;
 }
