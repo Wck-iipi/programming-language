@@ -193,6 +193,12 @@ struct InterpreterStmt {
       }
     }
   }
+  void operator()(std::shared_ptr<While> stmt) {
+    while (std::visit(InterpreterHelper::loxTypesToBool{},
+                      InterpreterHelper::evaluate(stmt->condition))) {
+      InterpreterHelper::interpret({stmt->body});
+    }
+  }
 };
 
 void executeBlock(std::vector<Stmt> statements, Environment newEnvironment) {

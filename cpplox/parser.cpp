@@ -236,11 +236,23 @@ Stmt Parser::statement() {
   if (match({IF})) {
     return ifStatement();
   }
+  if (match({WHILE})) {
+    return whileStatement();
+  }
   if (match({LEFT_BRACE})) {
     std::vector<Stmt> statements = block();
     return std::make_shared<Block>(statements);
   }
   return expressionStatement();
+}
+
+Stmt Parser::whileStatement() {
+  consume(LEFT_PAREN, "Expected '('");
+  Expr expr = this->expression();
+  consume(RIGHT_PAREN, "Expected ')'");
+  Stmt body = this->statement();
+
+  return std::make_shared<While>(expr, body);
 }
 
 Stmt Parser::ifStatement() {
