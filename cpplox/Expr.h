@@ -11,12 +11,13 @@ class Logical;
 class Binary;
 class Grouping;
 class Literal;
+class Call;
 class Unary;
 class Variable;
 using Expr = std::variant<std::shared_ptr<Assign>, std::shared_ptr<Logical>,
                           std::shared_ptr<Binary>, std::shared_ptr<Grouping>,
-                          std::shared_ptr<Literal>, std::shared_ptr<Unary>,
-                          std::shared_ptr<Variable>>;
+                          std::shared_ptr<Literal>, std::shared_ptr<Call>,
+                          std::shared_ptr<Unary>, std::shared_ptr<Variable>>;
 class Assign {
 public:
   Assign(Token left, Expr right) : left(left), right(right) {}
@@ -46,6 +47,14 @@ class Literal {
 public:
   Literal(loxTypes value) : value(value) {}
   const loxTypes value;
+};
+class Call {
+public:
+  Call(Expr callee, Token paren, std::vector<Expr> arguments)
+      : callee(callee), paren(paren), arguments(arguments) {}
+  const Expr callee;
+  const Token paren;
+  const std::vector<Expr> arguments;
 };
 class Unary {
 public:

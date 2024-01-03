@@ -38,6 +38,8 @@ private:
   Expr assignment();
   Expr orExpr();
   Expr andExpr();
+  Expr call();
+  Expr finishCall(Expr);
 
   Stmt statement();
   Stmt printStatement();

@@ -19,6 +19,7 @@ set(SOURCE_FILES
   interpreter.cpp
   Stmt.cpp
   environment.cpp
+  loxCallable.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

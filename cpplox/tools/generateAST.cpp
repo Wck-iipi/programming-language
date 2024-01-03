@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
                 "Binary   : Expr left, Token op, Expr right",
                 "Grouping : Expr expression",
                 "Literal  : loxTypes value",
+                "Call : Expr callee, Token paren, std::vector<Expr> arguments",
                 "Unary    : Token op, Expr right",
                 "Variable : Token name",
             });

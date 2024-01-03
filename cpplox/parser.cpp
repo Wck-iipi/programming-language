@@ -119,7 +119,38 @@ Expr Parser::unary() {
     Expr right = this->unary();
     return std::make_shared<Unary>(op, right);
   }
-  return primary();
+  return call();
+}
+
+Expr Parser::call() {
+  Expr expr = this->primary();
+
+  while (true) {
+    if (match({LEFT_PAREN})) {
+      expr = this->finishCall(expr);
+    } else {
+      break;
+    }
+  }
+
+  return expr;
+}
+
+Expr Parser::finishCall(Expr callee) {
+  std::vector<Expr> arguments;
+
+  if (!check(RIGHT_PAREN)) {
+    do {
+      if (arguments.size() >= 255) {
+        Error::error(peek(), "Cannot have more than 255 arguments");
+      }
+      arguments.push_back(this->expression());
+    } while (match({COMMA}));
+  }
+
+  Token right_paren = consume(RIGHT_PAREN, "Expected ')' after arguments");
+
+  return std::make_shared<Call>(callee, right_paren, arguments);
 }
 
 Expr Parser::primary() {

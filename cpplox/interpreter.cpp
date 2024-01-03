@@ -1,4 +1,5 @@
 #include "./interpreter.h"
+#include "loxCallable.h"
 std::shared_ptr<Environment> environment = std::make_shared<Environment>();
 
 struct InterpreterHelper::loxTypesToBool {
@@ -159,10 +160,24 @@ struct Interpreter { // Visitor for Expr
     }
     return InterpreterHelper::evaluate(expr->right);
   }
-};
+  loxTypes operator()(std::shared_ptr<Call> expr) {
+    loxTypes callee = InterpreterHelper::evaluate(expr->callee);
 
-void executeBlock(std::vector<Stmt> statements,
-                  std::shared_ptr<Environment> newEnvironment);
+    std::vector<loxTypes> arguments;
+
+    for (Expr argument : expr->arguments) {
+      arguments.push_back(InterpreterHelper::evaluate(argument));
+    }
+
+    // Cast here
+    LoxCallable function; // Cast callee to LoxCallable
+    if (arguments.size() != function.arity()) {
+      throw new std::runtime_error(
+          "Expected " + std::to_string(function.arity()) +
+          " arguments but got " + std::to_string(arguments.size()) + ".");
+    }
+  }
+};
 
 struct InterpreterStmt {
   void operator()(std::shared_ptr<Expression> stmt) {

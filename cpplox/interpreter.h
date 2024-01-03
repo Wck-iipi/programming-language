@@ -9,6 +9,9 @@
 #include <variant>
 #include <vector>
 
+void executeBlock(std::vector<Stmt> statements,
+                  std::shared_ptr<Environment> newEnvironment);
+
 struct Interpreter; // Visitor for Expr
 struct InterpreterStmt;
 
