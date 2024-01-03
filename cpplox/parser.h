@@ -46,6 +46,7 @@ private:
   Stmt varDeclaration();
   Stmt ifStatement();
   Stmt whileStatement();
+  Stmt forStatement();
 
   std::vector<Stmt> block();
 

@@ -239,6 +239,9 @@ Stmt Parser::statement() {
   if (match({WHILE})) {
     return whileStatement();
   }
+  if (match({FOR})) {
+    return forStatement();
+  }
   if (match({LEFT_BRACE})) {
     std::vector<Stmt> statements = block();
     return std::make_shared<Block>(statements);
@@ -253,6 +256,48 @@ Stmt Parser::whileStatement() {
   Stmt body = this->statement();
 
   return std::make_shared<While>(expr, body);
+}
+
+Stmt Parser::forStatement() {
+  consume(LEFT_PAREN, "Expected '(' after for");
+
+  std::optional<Stmt> initializer;
+  if (match({VAR})) {
+    initializer = varDeclaration();
+  } else {
+    initializer = expressionStatement();
+  }
+
+  std::optional<Expr> condition;
+  if (!check(SEMICOLON)) {
+    condition = expression();
+  }
+  consume(SEMICOLON, "Expected ';' after loop condition");
+
+  std::optional<Expr> increment;
+  if (!check(RIGHT_PAREN)) {
+    increment = expression();
+  }
+  consume(RIGHT_PAREN, "Expected ')' after for clauses");
+
+  Stmt body = statement();
+
+  if (increment.has_value()) {
+    body = std::make_shared<Block>(std::vector<Stmt>{
+        body, std::make_shared<Expression>(increment.value())});
+  }
+
+  if (!condition.has_value()) {
+    condition = std::make_shared<Literal>(true);
+  }
+  body = std::make_shared<While>(condition.value(), body);
+
+  if (initializer.has_value()) {
+    body =
+        std::make_shared<Block>(std::vector<Stmt>{initializer.value(), body});
+  }
+
+  return body;
 }
 
 Stmt Parser::ifStatement() {
