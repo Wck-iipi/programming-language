@@ -7,22 +7,22 @@
 #include <string>
 
 class Environment {
-  std::map<std::string,
-           loxTypes>
-      values;
+  std::map<std::string, loxTypes> values;
 
 public:
   std::optional<std::shared_ptr<Environment>> enclosing;
+
+  void setEquals(std::shared_ptr<Environment> env) {
+    values = env->values;
+    enclosing = env->enclosing;
+  }
+
   Environment() {}
 
-  Environment(Environment &other)
-      : values(other.values), enclosing(other.enclosing) {}
-  void
-  define(std::string name,
-         loxTypes value);
-  void
-  assign(Token name,
-         loxTypes value);
+  Environment(std::shared_ptr<Environment> other) : enclosing(other) {}
+
+  void define(std::string name, loxTypes value);
+  void assign(Token name, loxTypes value);
 
   loxTypes get(Token name);
 };

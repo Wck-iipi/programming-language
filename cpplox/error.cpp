@@ -12,7 +12,7 @@ void Error::error(Token token, std::string message) {
 }
 
 void Error::report(int line, std::string where, std::string message) {
-  throw std::runtime_error("[line " + std::to_string(line) + "] Error" + where +
-                           ": " + message);
+  throw std::runtime_error("[line " + std::to_string(line + 1) + "] Error" +
+                           where + ": " + message);
   hadError = true;
 }

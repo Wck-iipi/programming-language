@@ -1,5 +1,5 @@
 #include "./interpreter.h"
-Environment environment;
+std::shared_ptr<Environment> environment = std::make_shared<Environment>();
 
 struct InterpreterHelper::loxTypesToBool {
   bool operator()(double value) const { return value; }
@@ -16,7 +16,7 @@ struct InterpreterHelper::loxTypesToBool {
 struct Interpreter { // Visitor for Expr
   loxTypes operator()(std::shared_ptr<Assign> expr) {
     loxTypes value = InterpreterHelper::evaluate(expr->right);
-    environment.assign(expr->left, value);
+    environment->assign(expr->left, value);
     return value;
   }
 
@@ -143,7 +143,7 @@ struct Interpreter { // Visitor for Expr
     return "Unreachable code";
   }
   loxTypes operator()(std::shared_ptr<Variable> expr) {
-    return environment.get(expr->name);
+    return environment->get(expr->name);
   }
   loxTypes operator()(std::shared_ptr<Logical> expr) {
     loxTypes left = InterpreterHelper::evaluate(expr->left);
@@ -161,7 +161,8 @@ struct Interpreter { // Visitor for Expr
   }
 };
 
-void executeBlock(std::vector<Stmt> statements, Environment newEnvironment);
+void executeBlock(std::vector<Stmt> statements,
+                  std::shared_ptr<Environment> newEnvironment);
 
 struct InterpreterStmt {
   void operator()(std::shared_ptr<Expression> stmt) {
@@ -178,10 +179,13 @@ struct InterpreterStmt {
     } else {
       value = std::monostate{};
     }
-    environment.define(stmt->name.lexeme, value);
+    environment->define(stmt->name.lexeme, value);
   }
   void operator()(std::shared_ptr<Block> stmt) {
-    executeBlock(stmt->statements, Environment(environment));
+    std::shared_ptr<Environment> environmentInside =
+        std::make_shared<Environment>(environment);
+
+    executeBlock(stmt->statements, environmentInside);
   }
   void operator()(std::shared_ptr<If> stmt) {
     if (std::visit(InterpreterHelper::loxTypesToBool{},
@@ -201,8 +205,10 @@ struct InterpreterStmt {
   }
 };
 
-void executeBlock(std::vector<Stmt> statements, Environment newEnvironment) {
-  Environment previous = environment;
+void executeBlock(std::vector<Stmt> statements,
+                  std::shared_ptr<Environment> newEnvironment) {
+  std::shared_ptr<Environment> previous;
+  previous = environment;
   try {
     environment = newEnvironment;
     for (Stmt statement : statements) {

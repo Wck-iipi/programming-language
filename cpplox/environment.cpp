@@ -1,8 +1,6 @@
 #include "./environment.h"
 
-void Environment::define(
-    std::string name,
-    loxTypes value) {
+void Environment::define(std::string name, loxTypes value) {
   try {
     if (this->values.count(name) > 0) {
       // TODO: throw error when same variable in same scope is redefined
@@ -16,8 +14,7 @@ void Environment::define(
   }
 }
 
-loxTypes
-Environment::get(Token name) {
+loxTypes Environment::get(Token name) {
   try {
     if (this->values.count(name.lexeme) > 0) {
       return this->values.at(name.lexeme);
@@ -32,9 +29,7 @@ Environment::get(Token name) {
   }
 }
 
-void Environment::assign(
-    Token name,
-    loxTypes value) {
+void Environment::assign(Token name, loxTypes value) {
   if (this->values.count(name.lexeme) > 0) {
     this->values[name.lexeme] = value;
     return;
